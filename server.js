@@ -88,28 +88,41 @@ function initMovies(){
   // }
   if (db)
   {
-    var movie = db.collection('movies');
-    movie.drop(function(err, delOK){
-      if (err)
+    //var movie = db.collection('movies');
+    db.collection('movies').insertOne({name: "El laberinto del fauno", year: 2006}, function(err, r){
+      if(err)
       {
-        console.log("Failed to delete movies");
+        console.log("Failed to insert token movie");
         console.log(err);
       }
-      else {
-        console.log("Prev data deleted successfully. Creating new movie data.");
-        db.collection('movies').insertMany(sampleMovies, function (err, res){
+      else
+      {
+        console.log("Successfully inserted token movie");
+        db.collection('movies').drop(function(err, delOK){
           if (err)
           {
-            console.log("Failed to insert movies");
+            console.log("Failed to delete movies");
             console.log(err);
           }
           else {
-            console.log("New Movie DB ready to go.");          
+            console.log("Prev data deleted successfully. Creating new movie data.");
+            db.collection('movies').insertMany(sampleMovies, function (err, res){
+              if (err)
+              {
+                console.log("Failed to insert movies");
+                console.log(err);
+              }
+              else {
+                console.log("New Movie DB ready to go.");          
+              }
+            });
           }
+      
         });
       }
-  
+
     });
+    
   }
   else 
   {
