@@ -299,6 +299,21 @@ $ git push</pre>
                    <span class="code" id="count-value">No database configured</span>
                    </p>
                 <%} %>
+
+                <% if (movieInfo) { %>
+                  </p>
+                   <div class="code"><h3>DB Connection Info:</h3>
+                     <table style='margin-left: 20px'>
+                       <% movieInfo.forEach(function(movie){ %>
+                         <tr><td>Movie:</td><td><%= movie.name %></td><td><%= movie.year %></td></tr>
+                        <% }); %>
+                     </table>
+                   </div>
+               <% } else { %>
+                  <span class="code">Movie Database Issue</span>
+                  </p>
+               <%} %>
+
           </section>
         </div>
 
