@@ -1,0 +1,15 @@
+doctype html
+html.no-js(lang="en")
+    include ./header.pug
+body
+    h1="All da movies!"
+    - movieInfo.forEach(function(movie){
+      h2 #{movie.name}  
+    - });
+    .movie.extra#extended
+        p.
+            lalalla
+            ladff
+            And more lalal
+        li harumph
+        li ok then

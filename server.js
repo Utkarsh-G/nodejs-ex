@@ -1,9 +1,10 @@
 //  OpenShift sample Node application
 var express = require('express'),
     app     = express(),
-    morgan  = require('morgan');
+    morgan  = require('morgan'),
+    bodyParser = require('body-parser');
 
-var isLocal = false;
+var isLocal = true;
 
 var ipDefault = '0.0.0.0';
 
@@ -14,8 +15,12 @@ if (isLocal)
     
 Object.assign=require('object-assign')
 
-app.engine('html', require('ejs').renderFile);
-app.use(morgan('combined'))
+//app.engine('html', require('ejs').renderFile);
+app.set('views', './views');
+app.set('view engine', 'pug');
+app.use(morgan('combined'));
+app.use(express.static("public"));
+app.use(bodyParser.urlencoded({extended: true}));
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || ipDefault,
@@ -154,11 +159,12 @@ app.get('/', function (req, res) {
           if(err)
           {
             console.log("failed to find 2017 movies");
-            res.render('index.html', { pageCountMessage : count, dbInfo: dbDetails, movieInfo: null });
+            res.render('index', { pageCountMessage : count, dbInfo: dbDetails, movieInfo: null });
+            
           }
           else {
             console.log("Found the movies. Sending results to index.html");
-            res.render('index.html', { pageCountMessage : count, dbInfo: dbDetails, movieInfo: results });
+            res.render('index', { pageCountMessage : count, dbInfo: dbDetails, movieInfo: results });
           }
         });
     });
@@ -166,7 +172,7 @@ app.get('/', function (req, res) {
     
 
   } else {
-    res.render('index.html', { pageCountMessage : null, movieInfo: null});
+    res.render('index', { pageCountMessage : null, movieInfo: null});
   }
 });
 
@@ -182,6 +188,30 @@ app.get('/pagecount', function (req, res) {
     });
   } else {
     res.send('{ pageCount: -1 }');
+  }
+});
+
+//RESTful Routes
+app.get("/movies", function(req,res){
+  movies = db.collection('movies');
+  if (db)
+  {
+    movies.find().toArray(function(err, movArray){
+      if(err)
+      {
+        console.log(err);
+        res.render("index");
+        return;
+      }
+      else
+      {
+        res.render("index", {movies : movArray});
+      }
+    });
+  }
+  else
+  {
+    res.render("index");
   }
 });
 
