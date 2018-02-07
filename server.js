@@ -1,8 +1,9 @@
 //  OpenShift sample Node application
-var express = require('express'),
-    app     = express(),
-    morgan  = require('morgan'),
-    bodyParser = require('body-parser');
+var express     = require('express'),
+    app         = express(),
+    morgan      = require('morgan'),
+    bodyParser  = require('body-parser'),
+    mdb         = require('moviedb')('f966801bba64717541e531a67551ed33');
 
 var ipLocal = '127.0.0.1';
 var portLocal = 8080;
@@ -81,14 +82,8 @@ var sampleMovies = [{name: "Bladerunner", year: 2017},
                     ];
 
 function initMovies(){
-  // if (!db) {
-  //   initDb(function(err){
-  //     console.log("Connection to DB successful!");
-  //   });
-  // }
   if (db)
   {
-    //var movie = db.collection('movies');
     db.collection('movies').insertOne({name: "El laberinto del fauno", year: 2006}, function(err, r){
       if(err)
       {
@@ -186,7 +181,7 @@ app.get('/pagecount', function (req, res) {
   }
 });
 
-//RESTful Routes
+//RESTful Routes ... eventually
 app.get("/movies", function(req,res){
   movies = db.collection('movies');
   if (db)
@@ -208,6 +203,27 @@ app.get("/movies", function(req,res){
   {
     res.render("index");
   }
+});
+
+app.get("/latest", function(req, res){
+  console.log("\n\nRouting latest\n");
+
+  mdb.movieInfo({id:348}, (err, result)=> {
+    if(err)
+    {
+      console.log("\nERROR in retreiving latest\n");
+      console.log(err);
+    }
+    else
+    {
+      console.log("\nFOUND latest\n");
+      console.log(result);
+      console.log("\n\nTitle:");
+      console.log(result.title);
+    }
+  });
+
+  res.render("index");
 });
 
 // error handling
