@@ -4,14 +4,8 @@ var express = require('express'),
     morgan  = require('morgan'),
     bodyParser = require('body-parser');
 
-var isLocal =false;
-
-var ipDefault = '0.0.0.0';
-
-if (isLocal)
-{
-  ipDefault = '127.0.0.1';
-}
+var ipLocal = '127.0.0.1';
+var portLocal = 8080;
     
 Object.assign=require('object-assign');
 
@@ -22,8 +16,8 @@ app.use(morgan('combined'));
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
 
-var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
-    ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || ipDefault,
+var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || portLocal,
+    ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || ipLocal,
     mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL,
     mongoURLLabel = "";
 
