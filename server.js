@@ -181,6 +181,7 @@ app.get('/pagecount', function (req, res) {
 });
 
 //RESTful Routes ... eventually
+//INDEX route
 app.get("/movies", function(req,res){
   movies = db.collection('movies');
   if (db)
@@ -202,6 +203,29 @@ app.get("/movies", function(req,res){
   {
     res.render("index");
   }
+});
+
+//NEW route
+app.get("/movies/new", function(req,res){
+  res.render("new");
+});
+
+//CREATE route
+app.post("/movies", function(req,res){
+  //create movie
+  movies = db.collection('movies');
+  movies.insertOne(req.body.movie, function(err, newMov){
+    if(err){
+      console.log("Error in trying to add new movie");
+      console.log(err);
+      res.render("new");
+    }
+    else
+    {
+      //redirect
+      res.redirect("/movies");
+    }
+  });
 });
 
 app.get("/latest", function(req, res){

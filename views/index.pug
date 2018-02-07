@@ -2,19 +2,13 @@ doctype html
 html.no-js(lang="en")
     include ./header.pug
 body
-    .ui.fixed.inverted.menu
-        .ui.container
-            .header.item 
-                i.film.icon
-                |Movie Night
-            a(href="/").item Home
-            a(href="/movies/new").item New Post
-
-    h1="All da movies!"
-    - if (movies){
-        - movies.forEach(function(movie){
-        h2 #{movie.name}
-        - });
-    - } else {
-        p No Movie Info Found. GGs.
-    - }
+    include ./menu.pug
+    .container.main
+        h1="All da movies!"
+        - if (movies){
+            - movies.forEach(function(movie){
+            h2 #{movie.name}
+            - });
+        - } else {
+            p No Movie Info Found. GGs. Pls no touch menu.
+        - }
