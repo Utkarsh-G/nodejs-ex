@@ -2,18 +2,19 @@ doctype html
 html.no-js(lang="en")
     include ./header.pug
 body
+    .ui.fixed.inverted.menu
+        .ui.container
+            .header.item 
+                i.film.icon
+                |Movie Night
+            a(href="/").item Home
+            a(href="/movies/new").item New Post
+
     h1="All da movies!"
-    - if (movieInfo){
-        - movieInfo.forEach(function(movie){
-        h2 #{movie.name}  
+    - if (movies){
+        - movies.forEach(function(movie){
+        h2 #{movie.name}
         - });
-        .movie.extra#extended
-            p.
-                lalalla
-                ladff
-                And more lalal
-            li harumph
-            li ok then
     - } else {
         p No Movie Info Found. GGs.
     - }

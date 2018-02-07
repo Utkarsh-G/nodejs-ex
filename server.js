@@ -45,6 +45,7 @@ var db = null,
     dbDetails = new Object();
 console.log("Trying to init DB");
 mongoURL = mongoURL || "mongodb://localhost/movies";
+
 var initDb = function(callback) {
   if (mongoURL == null) {console.log("mongoURL is null"); return;}
   else {console.log('mongoURL: %s', mongoURL);} 
@@ -126,8 +127,6 @@ function initMovies(){
   
 }
 
-//initMovies();
-
 app.get('/', function (req, res) {
   console.log("Routing GET");
   // try to initialize the db on every request if it's not already
@@ -149,12 +148,12 @@ app.get('/', function (req, res) {
           if(err)
           {
             console.log("failed to find 2017 movies");
-            res.render('index', { pageCountMessage : count, dbInfo: dbDetails, movieInfo: null });
+            res.render('index', { pageCountMessage : count, dbInfo: dbDetails, movies: null });
             
           }
           else {
             console.log("Found the movies. Sending results to index.html");
-            res.render('index', { pageCountMessage : count, dbInfo: dbDetails, movieInfo: results });
+            res.render('index', { pageCountMessage : count, dbInfo: dbDetails, movies: results });
           }
         });
     });
@@ -162,7 +161,7 @@ app.get('/', function (req, res) {
     
 
   } else {
-    res.render('index', { pageCountMessage : null, movieInfo: null});
+    res.render('index', { pageCountMessage : null, movies: null});
   }
 });
 
