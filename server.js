@@ -13,7 +13,7 @@ if (isLocal)
   ipDefault = '127.0.0.1';
 }
     
-Object.assign=require('object-assign')
+Object.assign=require('object-assign');
 
 //app.engine('html', require('ejs').renderFile);
 app.set('views', './views');
@@ -51,7 +51,8 @@ var db = null,
 console.log("Trying to init DB");
 mongoURL = mongoURL || "mongodb://localhost/movies";
 var initDb = function(callback) {
-  if (mongoURL == null) {console.log("mongoURL is null"); return;} 
+  if (mongoURL == null) {console.log("mongoURL is null"); return;}
+  else {console.log('mongoURL: %s', mongoURL);} 
 
   var mongodb = require('mongodb');
   if (mongodb == null) return;
