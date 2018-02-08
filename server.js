@@ -295,6 +295,12 @@ app.put("/movies/:id", function(req,res){
 
   });
 });
+
+// DELETE route
+
+app.delete("/movies/:id", function(req, res){
+  res.send("You have reached the DESTROY ALL ROBOTS route");
+});
 app.get("/latest", function(req, res){
   console.log("\n\nRouting latest\n");
 

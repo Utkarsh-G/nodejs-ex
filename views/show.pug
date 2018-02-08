@@ -8,4 +8,6 @@ body
         .ui.top.attached.segment
             .item 
                 .content #{movie.year}
+            form(action="/movies/"+movie._id+"?_method=DELETE", method="POST")
+                button.ui.red.basic.button Delete
                 
