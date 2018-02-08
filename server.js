@@ -4,7 +4,9 @@ var express     = require('express'),
     morgan      = require('morgan'),
     bodyParser  = require('body-parser'),
     mdb         = require('moviedb')('f966801bba64717541e531a67551ed33'),
-    methodOv    = require("method-override");
+    methodOv    = require("method-override"),
+    expSanitizer= require("express-sanitizer");
+
     var mongodb = require('mongodb');
     var ObjectId = mongodb.ObjectID;
 
@@ -20,6 +22,7 @@ app.use(morgan('combined'));
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(methodOv("_method"));
+app.use(expSanitizer()); //must be placed AFTER bodyParser
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || portLocal,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || ipLocal,
@@ -137,50 +140,9 @@ app.get('/', function (req, res) {
   if (!db) {
     initDb(function(err){});
   }
-  if (db) {
-    var col = db.collection('counts');
-    // Create a document with request IP and current time of request
-    col.insert({ip: req.ip, date: Date.now()});
-    col.count(function(err, count){
-      if (err) {
-        console.log('Error running count. Message:\n'+err);
-      }
-      var movie = db.collection('movies');
-
-        movie.find({year: 2017}).toArray(function(err, results){
-          if(err)
-          {
-            console.log("failed to find 2017 movies");
-            res.render('index', { pageCountMessage : count, dbInfo: dbDetails, movies: null });
-            
-          }
-          else {
-            console.log("Found the movies. Sending results to index.html");
-            res.render('index', { pageCountMessage : count, dbInfo: dbDetails, movies: results });
-          }
-        });
-    });
-
     
+  res.render('home');
 
-  } else {
-    res.render('index', { pageCountMessage : null, movies: null});
-  }
-});
-
-app.get('/pagecount', function (req, res) {
-  // try to initialize the db on every request if it's not already
-  // initialized.
-  if (!db) {
-    initDb(function(err){});
-  }
-  if (db) {
-    db.collection('counts').count(function(err, count ){
-      res.send('{ pageCount: ' + count + '}');
-    });
-  } else {
-    res.send('{ pageCount: -1 }');
-  }
 });
 
 //RESTful Routes ... eventually
@@ -215,6 +177,9 @@ app.get("/movies/new", function(req,res){
 
 //CREATE route
 app.post("/movies", function(req,res){
+  //sanitize input
+  req.body.movie.name = req.sanitize(req.body.movie.name);
+  req.body.movie.year = req.sanitize(req.body.movie.year);
   //create movie
   movies = db.collection('movies');
   movies.insertOne(req.body.movie, function(err, newMov){
@@ -273,6 +238,9 @@ app.get("/movies/:id/edit", function(req, res){
 
 // UPDATE Route
 app.put("/movies/:id", function(req,res){
+  //sanitize input
+  req.body.movie.name = req.sanitize(req.body.movie.name);
+  req.body.movie.year = req.sanitize(req.body.movie.year);
   movies = db.collection('movies');
   movies.updateOne({_id: ObjectId(req.params.id)}, {$set:{
     name: req.body.movie.name,
@@ -314,28 +282,6 @@ app.delete("/movies/:id", function(req, res){
     }
 
   });
-});
-
-
-app.get("/latest", function(req, res){
-  console.log("\n\nRouting latest\n");
-
-  mdb.movieInfo({id:348}, (err, result)=> {
-    if(err)
-    {
-      console.log("\nERROR in retreiving latest\n");
-      console.log(err);
-    }
-    else
-    {
-      console.log("\nFOUND latest\n");
-      console.log(result);
-      console.log("\n\nTitle:");
-      console.log(result.title);
-    }
-  });
-
-  res.render("index");
 });
 
 // error handling

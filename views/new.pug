@@ -8,7 +8,7 @@ body
         form(action="/movies", method="POST").ui.form
             .field
                 label Name
-                input(type="text", name="movie[name]", placeholder="name")
+                input(type="text", name="movie[name]", placeholder="name", required="true")
             .field
                 label Year
                 input(type="text", name="movie[year]", placeholder="year")

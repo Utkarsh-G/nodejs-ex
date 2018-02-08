@@ -9,6 +9,7 @@
     "chai-http": "^2.0.1",
     "ejs": "^2.5.7",
     "express": "^4.16.2",
+    "express-sanitizer": "^1.0.3",
     "method-override": "^2.3.10",
     "mocha": "^2.5.3",
     "mongodb": "^2.2.34",
