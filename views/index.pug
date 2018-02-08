@@ -3,12 +3,13 @@ html.no-js(lang="en")
     include ./header.pug
 body
     include ./menu.pug
-    .container.main
+    .ui.container.main.segment
         h1="All da movies!"
-        - if (movies){
-            - movies.forEach(function(movie){
-            h2 #{movie.name}
-            - });
-        - } else {
-            p No Movie Info Found. GGs. Pls no touch menu.
-        - }
+        if (movies)
+            each movie, i in movies
+                h2= movie.name
+                - var linkstr = "/movies/" + movie._id;
+                a(href=linkstr) Read More
+        else
+            p No Movies Found
+        

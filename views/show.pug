@@ -1,0 +1,11 @@
+doctype html
+html.no-js(lang="en")
+    include ./header.pug
+body
+    include ./menu.pug
+    .ui.main.container.segment
+        .ui.huge.header #{movie.name}
+        .ui.top.attached.segment
+            .item 
+                .content #{movie.year}
+                

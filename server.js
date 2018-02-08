@@ -4,6 +4,8 @@ var express     = require('express'),
     morgan      = require('morgan'),
     bodyParser  = require('body-parser'),
     mdb         = require('moviedb')('f966801bba64717541e531a67551ed33');
+    var mongodb = require('mongodb');
+    var ObjectId = mongodb.ObjectID;
 
 var ipLocal = '127.0.0.1';
 var portLocal = 8080;
@@ -50,7 +52,6 @@ var initDb = function(callback) {
   if (mongoURL == null) {console.log("mongoURL is null"); return;}
   else {console.log('mongoURL: %s', mongoURL);} 
 
-  var mongodb = require('mongodb');
   if (mongodb == null) return;
 
   mongodb.connect(mongoURL, function(err, conn) {
@@ -78,7 +79,7 @@ var initDb = function(callback) {
 };
 
 var sampleMovies = [{name: "Bladerunner", year: 2017},
-                    {name: "Jumanji 2", year: 2017},
+                    {name: "Jumanji2", year: 2017},
                     {name: "Whiplash", year: 2014}
                     ];
 
@@ -224,6 +225,29 @@ app.post("/movies", function(req,res){
     {
       //redirect
       res.redirect("/movies");
+    }
+  });
+});
+
+//SHOW route
+app.get("/movies/:id", function(req,res){
+  movies = db.collection('movies');
+  console.log("\n\nparams:");
+  console.log(req.params);
+  console.log("\n\nparams id:");
+  console.log(req.params.id);
+  movies.findOne({_id: ObjectId(req.params.id)}, function(err, foundMovie){ //_id:req.params.id
+    if(err)
+    {
+      console.log("\n\nError in finding movie by id");
+      console.log(err);
+      res.send("Movie not found. Woopsie");
+    }
+    else
+    {
+      console.log("\n\nFound by ID");
+      console.log(foundMovie);
+      res.render("show",{movie: foundMovie});
     }
   });
 });
