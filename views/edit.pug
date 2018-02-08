@@ -1,0 +1,15 @@
+doctype html
+html.no-js(lang="en")
+    include ./header.pug
+body
+    include ./menu.pug
+    .ui.main.container.segment
+        .ui.huge.header Edit #{movie.name}
+        form(action="/movies/"+ movie._id +"?_method=PUT", method="POST").ui.form
+            .field
+                label Name
+                input(type="text", name="movie[name]", value=movie.name)
+            .field
+                label Year
+                input(type="text", name="movie[year]", value= movie.year)
+            input(type="submit").ui.violet.basic.button

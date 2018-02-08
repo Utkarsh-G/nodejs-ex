@@ -274,7 +274,6 @@ app.get("/movies/:id/edit", function(req, res){
 // UPDATE Route
 app.put("/movies/:id", function(req,res){
   movies = db.collection('movies');
-
   movies.updateOne({_id: ObjectId(req.params.id)}, {$set:{
     name: req.body.movie.name,
     year: req.body.movie.year
@@ -282,7 +281,7 @@ app.put("/movies/:id", function(req,res){
 
     if(err)
     {
-      console.log("\n\nError in finding movie by id");
+      console.log("\n\nError in updating movie by id");
       console.log(err);
       res.send("Movie not updated. Woopsie.");
     }
@@ -299,8 +298,25 @@ app.put("/movies/:id", function(req,res){
 // DELETE route
 
 app.delete("/movies/:id", function(req, res){
-  res.send("You have reached the DESTROY ALL ROBOTS route");
+  movies = db.collection('movies');
+  movies.deleteOne({_id: ObjectId(req.params.id)}, function(err, result){
+    if(err)
+    {
+      console.log("\n\nError in deleting movie by id");
+      console.log(err);
+      res.send("Movie not deleted. Woopsie.");
+    }
+    else
+    {
+      console.log("\n\nDeleted by ID");
+      //redirect
+      res.redirect("/movies");
+    }
+
+  });
 });
+
+
 app.get("/latest", function(req, res){
   console.log("\n\nRouting latest\n");
 

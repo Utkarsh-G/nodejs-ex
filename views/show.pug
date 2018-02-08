@@ -8,6 +8,7 @@ body
         .ui.top.attached.segment
             .item 
                 .content #{movie.year}
-            form(action="/movies/"+movie._id+"?_method=DELETE", method="POST")
-                button.ui.red.basic.button Delete
+        a(href="/movies/"+movie._id+"/edit").ui.orange.basic.button Edit
+        form(action="/movies/"+movie._id+"?_method=DELETE", method="POST")
+            button.ui.red.basic.button Delete
                 
