@@ -3,7 +3,8 @@ var express     = require('express'),
     app         = express(),
     morgan      = require('morgan'),
     bodyParser  = require('body-parser'),
-    mdb         = require('moviedb')('f966801bba64717541e531a67551ed33');
+    mdb         = require('moviedb')('f966801bba64717541e531a67551ed33'),
+    methodOv    = require("method-override");
     var mongodb = require('mongodb');
     var ObjectId = mongodb.ObjectID;
 
@@ -18,6 +19,7 @@ app.set('view engine', 'pug');
 app.use(morgan('combined'));
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(methodOv("_method"));
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || portLocal,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || ipLocal,
@@ -232,10 +234,6 @@ app.post("/movies", function(req,res){
 //SHOW route
 app.get("/movies/:id", function(req,res){
   movies = db.collection('movies');
-  console.log("\n\nparams:");
-  console.log(req.params);
-  console.log("\n\nparams id:");
-  console.log(req.params.id);
   movies.findOne({_id: ObjectId(req.params.id)}, function(err, foundMovie){ //_id:req.params.id
     if(err)
     {
@@ -252,6 +250,51 @@ app.get("/movies/:id", function(req,res){
   });
 });
 
+// EDIT route
+
+app.get("/movies/:id/edit", function(req, res){
+  movies = db.collection('movies');
+
+  movies.findOne({_id: ObjectId(req.params.id)}, function(err, foundMovie){ //_id:req.params.id
+    if(err)
+    {
+      console.log("\n\nError in finding movie by id");
+      console.log(err);
+      res.send("Movie not found. Woopsie");
+    }
+    else
+    {
+      console.log("\n\nFound by ID");
+      console.log(foundMovie);
+      res.render("edit",{movie: foundMovie});
+    }
+  });
+});
+
+// UPDATE Route
+app.put("/movies/:id", function(req,res){
+  movies = db.collection('movies');
+
+  movies.updateOne({_id: ObjectId(req.params.id)}, {$set:{
+    name: req.body.movie.name,
+    year: req.body.movie.year
+  }}, function(err, r){
+
+    if(err)
+    {
+      console.log("\n\nError in finding movie by id");
+      console.log(err);
+      res.send("Movie not updated. Woopsie.");
+    }
+    else
+    {
+      console.log("\n\nUpdated by ID");
+      //redirect
+      res.redirect("/movies/"+req.params.id);
+    }
+
+  });
+});
 app.get("/latest", function(req, res){
   console.log("\n\nRouting latest\n");
 
